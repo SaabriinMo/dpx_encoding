@@ -63,6 +63,16 @@ hdlr.setFormatter(formatter)
 LOGGER.addHandler(hdlr)
 LOGGER.setLevel(logging.INFO)
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['rawcooked']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 
 def get_cid_data(fname):
     '''
@@ -201,6 +211,8 @@ def main():
     Delete original file, move TAR to autoingest path.
     '''
 
+    check_control()
+    
     if len(sys.argv) != 2:
         LOGGER.warning("SCRIPT EXIT: Error with shell script input:\n %s", sys.argv)
         sys.exit()
@@ -217,6 +229,7 @@ def main():
     log.append(f"==== New path for TAR wrap: {fullpath} ====")
     LOGGER.info("==== TAR Wrapping Check script start ===============================")
     LOGGER.info("Path received for TAR wrap using Python3 tarfile: %s", fullpath)
+
     split_path = os.path.split(fullpath)
     tar_source = split_path[1]
 

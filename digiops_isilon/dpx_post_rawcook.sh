@@ -22,6 +22,18 @@ function log {
 # Global date variable
 DATE_FULL=$(date +'%Y-%m-%d  - %T')
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo "===================== Post-RAWcook workflows ENDED ====================="'
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 # Check mkv_cooked/ folder populated before starting log writes
 if [ -z "$(ls -A ${MKV_DESTINATION}mkv_cooked/)" ]
   then

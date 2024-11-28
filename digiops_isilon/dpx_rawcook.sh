@@ -15,6 +15,18 @@ function log {
     echo "$1 - $timestamp"
 } >> "${SCRIPT_LOG}dpx_rawcook.log"
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo "============= DPX RAWcook script END ============="
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 # Remove or generate temporary files per script run
 ls "${MKV_DEST}mkv_cooked" > "${MKV_DEST}temp_queued_list.txt"
 touch "${MKV_DEST}temporary_rawcook_list.txt"

@@ -33,6 +33,16 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['power_off_all']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 
 def get_dar(fullpath):
     '''
@@ -436,6 +446,7 @@ def main():
     No clean up actions set -- this is manual responsibility.
     '''
     logger.info("========= START FILM OPS TRANSCODE TO PRORES =========================")
+    check_control()
     folder_content = os.listdir(FPATH)
     logger.info("Contents found: %s", folder_content)
     for film_item in folder_content:

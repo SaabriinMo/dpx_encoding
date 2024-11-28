@@ -22,6 +22,18 @@ function log {
     echo "$1 - $timestamp"
 } >> "${DPX_LOG}dpx_check_script.log"
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo '"============= DPX check script START ============='
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 touch "${MKV_PATH}mkv_list.txt"
 touch "${DPX_PATH}dpx_deletion_list.txt"
 touch "${MKV_PATH}successful_mkv_list.txt"

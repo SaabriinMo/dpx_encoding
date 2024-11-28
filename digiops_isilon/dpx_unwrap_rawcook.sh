@@ -10,11 +10,24 @@ DPX_PATH="${IS_DIGITAL}${UNWRAP_RAWCOOK}"
 ERRORS="${IS_DIGITAL}${CURRENT_ERRORS}"
 COMPLETED="${DPX_PATH}completed/"
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo "===================== DPX Unwrap RAWcook ENDED ====================="
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 # Function to write output to log, call 'log' + 'statement' that populates $1.
 function log {
     timestamp=$(date "+%Y-%m-%d - %H.%M.%S")
     echo "$timestamp - $1"
 } >> "${SCRIPT_LOG}dpx_unwrap_rawcook.log"
+
 
 touch "${DPX_PATH}unwrap_list.txt"
 touch "${DPX_PATH}confirmed_unwrap_list.txt"

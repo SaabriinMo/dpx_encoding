@@ -53,6 +53,16 @@ HDLR.setFormatter(FORMATTER)
 LOGGER.addHandler(HDLR)
 LOGGER.setLevel(logging.INFO)
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['power_off_all']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 
 def read_csv(dpx_sequence):
     '''
@@ -140,6 +150,7 @@ def main():
     When all renamed, check for complete part wholes and move to destination
     '''
     LOGGER.info("============ DPX PART WHOLE MOVE START ============")
+    check_control()
     rename(PART_TAR)
     rename(PART_RAWCOOK)
 

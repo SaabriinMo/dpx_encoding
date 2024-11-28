@@ -53,6 +53,16 @@ LOGGER.addHandler(HDLR)
 LOGGER.setLevel(logging.INFO)
 
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['power_off_all']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 def linux_untar_file(fpath):
     '''
     Subprocess action to unwrap a file
@@ -108,6 +118,7 @@ def main():
         sys.exit(f"{UNTAR_PATH} EMPTY. SCRIPT EXITING.")
 
     LOGGER.info("========= UNWRAP TAR CHECKSUM SCRIPT START =====================")
+    check_control()
 
     for fname in tar_files:
         fname_log = fname.split(".")[0]

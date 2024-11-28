@@ -61,6 +61,16 @@ hdlr.setFormatter(formatter)
 LOGGER.addHandler(hdlr)
 LOGGER.setLevel(logging.INFO)
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['rawcooked']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 
 def get_cid_data(fname):
     '''

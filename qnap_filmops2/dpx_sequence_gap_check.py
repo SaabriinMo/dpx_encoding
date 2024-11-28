@@ -43,6 +43,16 @@ hdlr.setFormatter(formatter)
 LOGGER.addHandler(hdlr)
 LOGGER.setLevel(logging.INFO)
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['power_off_all']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 
 def count_folder_depth(fpath):
     '''
@@ -118,6 +128,7 @@ def main():
     '''
     log_list = []
     paths = [ x for x in os.listdir(DPX_GAP_CHECK) if os.path.isdir(os.path.join(DPX_GAP_CHECK, x)) ]
+    check_control()
     if not paths:
         sys.exit()
 

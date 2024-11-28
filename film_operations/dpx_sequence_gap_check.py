@@ -44,6 +44,16 @@ LOGGER.addHandler(hdlr)
 LOGGER.setLevel(logging.INFO)
 
 
+def check_control():
+    '''
+    Check control json for downtime requests
+    '''
+    with open(CONTROL_JSON) as control:
+        j = json.load(control)
+        if not j['power_off_all']:
+            LOGGER.info('Script run prevented by downtime_control.json. Script exiting.')
+            sys.exit('Script run prevented by downtime_control.json. Script exiting.')
+
 def count_folder_depth(fpath):
     '''
     Work out the depth of folders to the DPX sequence
@@ -122,6 +132,7 @@ def main():
         sys.exit()
 
     LOGGER.info("==== DPX SEQUENCE GAP CHECK START ===================")
+    check_control()
     for pth in paths:
         fpath = os.path.join(DPX_GAP_CHECK, pth)
         LOGGER.info("** --- %s ---", fpath)

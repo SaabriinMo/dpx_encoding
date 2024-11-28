@@ -9,6 +9,18 @@ SCRIPT_LOG="${QNAP_FILM}${DPX_SCRIPT_LOG}"
 DPX_PATH="${QNAP_FILM}${DPX_COOK}"
 MKV_DEST="${QNAP_FILM}${MKV_ENCODED}"
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo "============= DPX RAWcook script END ============="
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 # Function to write output to log, call 'log' + 'statement' that populates $1.
 function log {
     timestamp=$(date "+%Y-%m-%d - %H.%M.%S")

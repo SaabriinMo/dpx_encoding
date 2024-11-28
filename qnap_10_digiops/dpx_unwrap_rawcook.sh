@@ -10,6 +10,18 @@ DPX_PATH="${QNAP_10_DIGIOPS}${UNWRAP_RAWCOOK}"
 ERRORS="${QNAP_10_DIGIOPS}${CURRENT_ERRORS}"
 COMPLETED="${DPX_PATH}completed/"
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo "============= DPX Unwrap RAWcook script END ============="
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 # Function to write output to log, call 'log' + 'statement' that populates $1.
 function log {
     timestamp=$(date "+%Y-%m-%d - %H.%M.%S")

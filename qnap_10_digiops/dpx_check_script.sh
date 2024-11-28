@@ -16,6 +16,18 @@ DPX_LOG="${QNAP_10_DIGIOPS}${DPX_SCRIPT_LOG}"
 ERRORS="${QNAP_10_DIGIOPS}${CURRENT_ERRORS}"
 ERRORS_DONE="${QNAP_10_DIGIOPS}${CURRENT_ERRORS}completed/"
 
+function control {
+    boole=$(cat "${CONTROL_JSON}" | grep "power_off_all" | awk -F': ' '{print $2}')
+    if [ "$boole" = false, ] ; then
+      echo "Control json requests script exit immediately" >> "${LOG}"
+      echo 'Control json requests script exit immediately'
+      exit 0
+    fi
+}
+
+# Control check inserted into code
+control
+
 # Function to write output to log
 function log {
     timestamp=$(date "+%Y-%m-%d - %H.%M.%S")
