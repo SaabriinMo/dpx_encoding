@@ -213,5 +213,5 @@ jobs:
               ${{ env.pylint_report }}
               ```
 
-              **Note:** 🚨 Errors need immediate attention! ⚠️ Warnings should be reviewed, but are less critical. ℹ️ Information messages are for your reference.
+              **Note:** 🚨 Errors need immediate attention! ⚠️ Warnings should be reviewed, but are less critical.
             token: ${{ secrets.BFI_BOT_TOKEN }}
