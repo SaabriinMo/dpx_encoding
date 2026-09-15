@@ -389,7 +389,6 @@ def main():
     log.append("Beginning TAR wrap now...")
     LOGGER.info("Beginning TAR wrap now ...")
     tar_path = tar_item(fullpath)
-    tar_file = os.path.split(tar_path)[1]
     if not tar_path:
         log.append("TAR WRAP FAILED. SCRIPT EXITING!")
         LOGGER.warning("TAR wrap failed for file: %s", fullpath)
@@ -403,6 +402,8 @@ def main():
             os.path.join(TAR_FAIL, f"{tar_source}_errors.log"), error_mssg1, error_mssg2
         )
         sys.exit(f"EXIT: TAR wrap failed for {fullpath}")
+
+    tar_file = os.path.split(tar_path)[1]
 
     # Determine verification method based on source size
     source_size = 0
@@ -546,22 +547,6 @@ def main():
             )
             sys.exit("Failed to add MD5 manifest To TAR file. Script exiting")
 
-        LOGGER.info(
-            "TAR MD5 manifest added to TAR file. Getting wholefile TAR checksum for logs"
-        )
-        whole_md5 = md5_hash(tar_path)
-        if whole_md5:
-            log.append(f"Whole TAR MD5 checksum for TAR file: {whole_md5}")
-            LOGGER.info("Whole TAR MD5 checksum for TAR file: %s", whole_md5)
-        else:
-            LOGGER.warning("Failed to retrieve whole TAR MD5 sum")
-
-        # Get complete size of file following TAR wrap
-        file_stats = os.stat(tar_path)
-        file_size = file_stats.st_size
-        log.append(f"File size is {file_size} bytes")
-        LOGGER.info("File size is %s bytes.", file_size)
-
         try:
             LOGGER.info("Moving %s to %s", tar_path, AUTOINGEST)
             shutil.move(tar_path, AUTOINGEST)
@@ -577,6 +562,22 @@ def main():
             shutil.move(md5_manifest, CHECKSUM)
         except Exception as err:
             LOGGER.warning("MD5 manifest move failed:\n%s", err)
+
+        LOGGER.info(
+            "TAR MD5 manifest added to TAR file. Getting wholefile TAR checksum for logs"
+        )
+        whole_md5 = md5_hash(tar_path)
+        if whole_md5:
+            log.append(f"Whole TAR MD5 checksum for TAR file: {whole_md5}")
+            LOGGER.info("Whole TAR MD5 checksum for TAR file: %s", whole_md5)
+        else:
+            LOGGER.warning("Failed to retrieve whole TAR MD5 sum")
+
+        # Get complete size of file following TAR wrap
+        file_stats = os.stat(tar_path)
+        file_size = file_stats.st_size
+        log.append(f"File size is {file_size} bytes")
+        LOGGER.info("File size is %s bytes.", file_size)
 
         # Tidy away error_log following successful creation
         resolved_error_log = f"resolved_{tar_source}_errors.log"
